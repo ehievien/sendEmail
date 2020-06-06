@@ -11,15 +11,10 @@ namespace sendEmail.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _config;
-
-        public EmailService(IConfiguration config)
+      
+        public async Task<Response> SendMessage(EmailRequest request)
         {
-            _config = config;
-        }
-        public EmailResponse SendMessage(EmailRequest request)
-        {
-            var apiKey = _config.GetSection("SENDGRID_API_KEY").Value;
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = request.Sender;
             List<EmailAddress> tos = request.Recipient;
@@ -27,8 +22,8 @@ namespace sendEmail.Services
             var subject = request.EmailSubject;
             var textContent = request.EmailBody;
             var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, subject, textContent, "", false);
-            var response = client.SendEmailAsync(msg);
-            return new EmailResponse();
+            var response = await client.SendEmailAsync(msg);
+            return response;
         }
     }
 }

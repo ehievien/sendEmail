@@ -11,27 +11,23 @@ using sendEmail.Services;
 namespace sendEmail.Controllers
 {
     
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SendEmailController : ControllerBase
     {
         private ILogger<SendEmailController> _logger;
-        private EmailService _emailservice;
-        private readonly IConfiguration _config;
-        public SendEmailController(ILogger<SendEmailController> logger, IConfiguration config)
+        private IEmailService _emailservice;
+        public SendEmailController(ILogger<SendEmailController> logger, IEmailService emailservice)
         {
-            _config = config;
             _logger = logger;
-            _emailservice = new EmailService(config);
+            _emailservice = emailservice;
         }
 
 
         [HttpGet]
         public IActionResult Get()
         {
-            //Log the unicorn!
-            _logger.LogInformation($"Found a unicorn on Haul Cycle Controller");
-
+            _logger.LogInformation($"Found a unicorn on SendEmail Controller");
             return Ok();
         }
 
@@ -48,7 +44,9 @@ namespace sendEmail.Controllers
             
                 _logger.LogInformation($"about to send email --{request.EmailSubject}");
                 var response = _emailservice.SendMessage(request);
+                if(response.Id > 0)
                     return StatusCode(StatusCodes.Status200OK);
+                else return StatusCode(StatusCodes.Status406NotAcceptable);
             }
             catch (Exception ex)
             {

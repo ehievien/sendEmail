@@ -29,7 +29,7 @@ namespace sendEmail
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -43,7 +43,7 @@ namespace sendEmail
                     {
                         Name = "Ehinomen Evien",
                         Email = string.Empty,
-                        Url = new Uri("https://github.com/ehievien/restfulApi/branches"),
+                        Url = new Uri("https://github.com/ehievien/sendEmail"),
 
                     },
                 });
